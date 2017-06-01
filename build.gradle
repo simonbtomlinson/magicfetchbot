@@ -32,6 +32,17 @@ dependencies {
 	kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
 	compile 'com.github.simonbtomlinson:telegram-bot-api:4db9aca'
+
+	compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+	def jackson_version = '2.8.8'
+	compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+	compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+
+	def retrofit_version = '2.2.0'
+	compile "com.squareup.retrofit2:retrofit:$retrofit_version"
+	compile("com.squareup.retrofit2:converter-jackson:$retrofit_version")
 }
 
 sourceSets {

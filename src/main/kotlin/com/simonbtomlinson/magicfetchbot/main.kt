@@ -1,7 +1,6 @@
 package com.simonbtomlinson.magicfetchbot
 
-import com.simonbtomlinson.magicfetchbot.dagger.BotModule
-import com.simonbtomlinson.magicfetchbot.dagger.DaggerBotComponent
+import com.simonbtomlinson.magicfetchbot.dagger.*
 import com.simonbtomlinson.telegram.api.types.method.GetMeMethod
 import spark.Spark.*
 
@@ -15,7 +14,11 @@ fun main(args: Array<String>) {
 	ipAddress(args[0])
 	port(args[1].toInt())
 	val apiKey = findConfigurationVariable("TELEGRAM_API_KEY")
-	val botComponent = DaggerBotComponent.builder().botModule(BotModule(apiKey)).build()
+	val commonComponent = DaggerCommonComponent.builder().commonModule(CommonModule()).build()
+	val botComponent = DaggerBotComponent.builder()
+			.commonComponent(commonComponent).
+			botModule(BotModule(apiKey)).
+			build()
 	val client = botComponent.telegramClient()
 
 	get("/test") { _, _ ->
