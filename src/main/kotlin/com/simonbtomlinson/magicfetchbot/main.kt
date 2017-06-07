@@ -1,6 +1,9 @@
 package com.simonbtomlinson.magicfetchbot
 
-import com.simonbtomlinson.magicfetchbot.dagger.*
+import com.simonbtomlinson.magicfetchbot.dagger.BotModule
+import com.simonbtomlinson.magicfetchbot.dagger.CommonModule
+import com.simonbtomlinson.magicfetchbot.dagger.DaggerBotComponent
+import com.simonbtomlinson.magicfetchbot.dagger.DaggerCommonComponent
 import com.simonbtomlinson.telegram.api.types.method.GetMeMethod
 import spark.Spark.*
 
