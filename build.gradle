@@ -56,6 +56,9 @@ dependencies {
 	compile 'org.postgresql:postgresql:42.1.0'
 	compile 'com.zaxxer:HikariCP:2.4.5'
 
+	compile 'org.slf4j:slf4j-api:1.7.25'
+	compile 'ch.qos.logback:logback-classic:1.2.3'
+
 	testCompile 'org.jetbrains.spek:spek-api:1.1.2'
 	testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.1.2'
 	testCompile "org.mockito:mockito-core:2.8.9"
