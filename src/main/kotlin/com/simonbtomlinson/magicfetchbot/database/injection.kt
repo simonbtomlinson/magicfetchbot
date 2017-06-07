@@ -54,4 +54,7 @@ class DatabaseModule(
 	@Singleton
 	fun provideConnectionManager(dataSource: DataSource) = ConnectionManager(dataSource)
 
+	@Provides
+	@Singleton
+	fun provideMagicSetDAO(connectionManager: ConnectionManager) = MagicSetDAO(connectionManager)
 }
