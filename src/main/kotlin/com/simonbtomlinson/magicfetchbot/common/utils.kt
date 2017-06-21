@@ -24,3 +24,9 @@ public inline fun <T : AutoCloseable, R> T.use(block: (T) -> R): R {
 		}
 	}
 }
+
+
+fun loadResourceAsString(resourceName: String): String {
+	// Need any classloader, so it doesn't matter that we use the one from String
+	return String::class.java.getResource(resourceName).readText()
+}

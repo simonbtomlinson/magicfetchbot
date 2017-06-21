@@ -15,7 +15,10 @@ import javax.sql.DataSource
 @Component(modules = arrayOf(DatabaseModule::class))
 interface DatabaseComponent {
 	fun connectionManager(): ConnectionManager
+	fun databaseManager(): DatabaseManager
 	fun magicSetDAO(): MagicSetDAO
+	fun magicCardDAO(): MagicCardDAO
+	fun magicPrintingDAO(): MagicPrintingDAO
 }
 
 @Module
@@ -57,4 +60,13 @@ class DatabaseModule(
 	@Provides
 	@Singleton
 	fun provideMagicSetDAO(connectionManager: ConnectionManager) = MagicSetDAO(connectionManager)
+
+	@Provides @Singleton
+	fun provideMagicCardDAO(connectionManager: ConnectionManager) = MagicCardDAO(connectionManager)
+
+	@Provides @Singleton
+	fun provideMagicPrintingDAO(connectionManager: ConnectionManager) = MagicPrintingDAO(connectionManager)
+
+	@Provides @Singleton
+	fun provideDatabaseManager(connectionManager: ConnectionManager) = DatabaseManager(connectionManager)
 }
