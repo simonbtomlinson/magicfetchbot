@@ -19,6 +19,7 @@ interface DatabaseComponent {
 	fun magicSetDAO(): MagicSetDAO
 	fun magicCardDAO(): MagicCardDAO
 	fun magicPrintingDAO(): MagicPrintingDAO
+	fun searchProvider(): SearchProvider
 }
 
 @Module
@@ -69,4 +70,7 @@ class DatabaseModule(
 
 	@Provides @Singleton
 	fun provideDatabaseManager(connectionManager: ConnectionManager) = DatabaseManager(connectionManager)
+
+	@Provides @Singleton
+	fun provideSearchProvider(connectionManager: ConnectionManager) = SearchProvider(connectionManager)
 }

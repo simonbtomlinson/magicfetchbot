@@ -6,8 +6,8 @@ import java.sql.Connection
 import javax.sql.DataSource
 
 
-class ConnectionManager(private val connectionPool: DataSource) {
+class ConnectionManager(val connectionPool: DataSource) {
 
-	fun <R> withConnection(block: (Connection) -> R) = connectionPool.getConnection().use(block)
+	inline fun <R> withConnection(block: (Connection) -> R) = connectionPool.getConnection().use(block)
 
 }
