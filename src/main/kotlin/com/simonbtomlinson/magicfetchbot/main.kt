@@ -1,5 +1,6 @@
 package com.simonbtomlinson.magicfetchbot
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.simonbtomlinson.magicfetchbot.cardloading.CardLoadingModule
 import com.simonbtomlinson.magicfetchbot.cardloading.DaggerCardLoadingComponent
 import com.simonbtomlinson.magicfetchbot.dagger.BotModule
@@ -7,7 +8,9 @@ import com.simonbtomlinson.magicfetchbot.dagger.CommonModule
 import com.simonbtomlinson.magicfetchbot.dagger.DaggerBotComponent
 import com.simonbtomlinson.magicfetchbot.dagger.DaggerCommonComponent
 import com.simonbtomlinson.magicfetchbot.database.*
-import com.simonbtomlinson.telegram.api.types.method.GetMeMethod
+import com.simonbtomlinson.telegram.api.types.Update
+import com.simonbtomlinson.telegram.api.types.inline.result.InlineQueryResultPhoto
+import com.simonbtomlinson.telegram.api.types.method.AnswerInlineQueryMethod
 import org.slf4j.LoggerFactory
 import spark.Spark.*
 
@@ -26,19 +29,19 @@ fun main(args: Array<String>) {
 	val commonComponent = DaggerCommonComponent.builder().commonModule(CommonModule()).build()
 	val apiKey = findConfigurationVariable("TELEGRAM_API_KEY")
 	val botComponent = DaggerBotComponent.builder()
-			.commonComponent(commonComponent).
-			botModule(BotModule(apiKey)).
-			build()
+			.commonComponent(commonComponent)
+			.botModule(BotModule(apiKey))
+			.build()
 	val cardLoadingComponent = DaggerCardLoadingComponent.builder().commonComponent(commonComponent)
 			.cardLoadingModule(CardLoadingModule("https://api.scryfall.com/"))
 			.build()
 	val databaseComponent = DaggerDatabaseComponent.builder()
 			.databaseModule(DatabaseModule(
-				databaseUser = "postgres",
-				databasePassword = "guest",
-				databaseName = "postgres",
-				serverName = "localhost",
-				portNumber = 5432
+				databaseUser = findConfigurationVariable("OPENSHIFT_POSTGRESQL_USERNAME"),
+				databasePassword = findConfigurationVariable("OPENSHIFT_POSTGRESQL_PASSWORD"),
+				databaseName = findConfigurationVariable("POSTGRES_FETCHBOT_DB"),
+				serverName = findConfigurationVariable("OPENSHIFT_POSTGRESQL_HOST"),
+				portNumber = findConfigurationVariable("OPENSHIFT_POSTGRESQL_PORT").toInt()
 			))
 			.build()
 
@@ -64,4 +67,28 @@ fun main(args: Array<String>) {
 			databaseComponent.magicPrintingDAO().insertMagicPrintings(printings)
 		}
 	}
+
+	val tgClient = botComponent.telegramClient()
+
+	fun handleUpdate(update: Update) {
+		logger.info("Got an update!")
+		if (update.type == Update.Type.INLINE_QUERY) {
+			val inlineQuery = update.inlineQuery!!
+			val queryParts = inlineQuery.query.split("|")
+			val cardName = queryParts.getOrNull(0)
+			val setCode = queryParts.getOrNull(1)
+			val searchCriteria = SearchCriteria(nameStartsWith = cardName, setCode = setCode)
+			val imageURIs = databaseComponent.searchProvider().searchForCards(searchCriteria)
+			tgClient.answerInlineQuery(AnswerInlineQueryMethod(
+					inlineQueryId = inlineQuery.id,
+					results = imageURIs.map { InlineQueryResultPhoto(id = it, photoUrl = it, thumbUrl = it) }.toTypedArray()
+			))
+		}
+	}
+
+	post("/webhook") { req, res ->
+		val update = commonComponent.objectMapper().readValue<Update>(req.body())
+		handleUpdate(update)
+	}
+
 }
