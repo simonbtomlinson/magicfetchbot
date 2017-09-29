@@ -24,8 +24,7 @@ class Main
 fun main(args: Array<String>) {
 	val logger = LoggerFactory.getLogger(Main::class.java)
 	staticFiles.location("public")
-	ipAddress(args[0])
-	port(args[1].toInt())
+	port(findConfigurationVariable("PORT").toInt())
 	val commonComponent = DaggerCommonComponent.builder().commonModule(CommonModule()).build()
 	val apiKey = findConfigurationVariable("TELEGRAM_API_KEY")
 	val botComponent = DaggerBotComponent.builder()

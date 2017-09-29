@@ -1,1 +1,1 @@
-web: java -jar build/libs/magicfetchbot-*-all.jar localhost $PORT
+web: java -jar build/libs/magicfetchbot-*-all.jar
