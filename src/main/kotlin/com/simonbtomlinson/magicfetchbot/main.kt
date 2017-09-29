@@ -40,7 +40,8 @@ fun main(args: Array<String>) {
 				databasePassword = findConfigurationVariable("POSTGRESQL_PASSWORD"),
 				databaseName = findConfigurationVariable("POSTGRES_FETCHBOT_DB"),
 				serverName = findConfigurationVariable("POSTGRESQL_HOST"),
-				portNumber = findConfigurationVariable("POSTGRESQL_PORT").toInt()
+				portNumber = findConfigurationVariable("POSTGRESQL_PORT").toInt(),
+				maxPoolSize = findConfigurationVariable("POOL_SIZE").toInt()
 			))
 			.build()
 

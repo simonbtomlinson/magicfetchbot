@@ -28,7 +28,8 @@ class DatabaseModule(
 		@get:Provides @get:Singleton @get:Named("databasePassword") val databasePassword: String,
 		@get:Provides @get:Singleton @get:Named("databaseName") val databaseName: String,
 		@get:Provides @get:Singleton @get:Named("databaseServerName") val serverName: String,
-		@get:Provides @get:Singleton @get:Named("databasePortNumber") val portNumber: Int
+		@get:Provides @get:Singleton @get:Named("databasePortNumber") val portNumber: Int,
+		@get:Provides @get:Singleton @get:Named("databaseMaxPoolSize") val maxPoolSize: Int
 ) {
 
 	@Provides
@@ -38,7 +39,8 @@ class DatabaseModule(
 			@Named("databasePassword") databasePassword: String,
 			@Named("databaseName") databaseName: String,
 			@Named("databaseServerName") databaseServerName: String,
-			@Named("databasePortNumber") databasePortNumber: Int
+			@Named("databasePortNumber") databasePortNumber: Int,
+			@Named("databaseMaxPoolSize") databaseMaxPoolSize: Int
 	): HikariConfig {
 		val props = Properties()
 		props["dataSourceClassName"] = "org.postgresql.ds.PGSimpleDataSource"
@@ -47,6 +49,7 @@ class DatabaseModule(
 		props["dataSource.databaseName"] = databaseName
 		props["dataSource.serverName"] = databaseServerName
 		props["dataSource.portNumber"] = databasePortNumber
+		props["maximumPoolSize"] = databaseMaxPoolSize
 		return HikariConfig(props)
 	}
 
