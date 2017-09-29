@@ -91,4 +91,8 @@ fun main(args: Array<String>) {
 		handleUpdate(update)
 	}
 
+	get("/") { req, res ->
+		"Index page!"
+	}
+
 }
