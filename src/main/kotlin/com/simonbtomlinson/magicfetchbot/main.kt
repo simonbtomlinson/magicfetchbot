@@ -37,11 +37,11 @@ fun main(args: Array<String>) {
 			.build()
 	val databaseComponent = DaggerDatabaseComponent.builder()
 			.databaseModule(DatabaseModule(
-				databaseUser = findConfigurationVariable("OPENSHIFT_POSTGRESQL_USERNAME"),
-				databasePassword = findConfigurationVariable("OPENSHIFT_POSTGRESQL_PASSWORD"),
+				databaseUser = findConfigurationVariable("POSTGRESQL_USERNAME"),
+				databasePassword = findConfigurationVariable("POSTGRESQL_PASSWORD"),
 				databaseName = findConfigurationVariable("POSTGRES_FETCHBOT_DB"),
-				serverName = findConfigurationVariable("OPENSHIFT_POSTGRESQL_HOST"),
-				portNumber = findConfigurationVariable("OPENSHIFT_POSTGRESQL_PORT").toInt()
+				serverName = findConfigurationVariable("POSTGRESQL_HOST"),
+				portNumber = findConfigurationVariable("POSTGRESQL_PORT").toInt()
 			))
 			.build()
 
