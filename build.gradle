@@ -73,3 +73,6 @@ sourceSets {
 }
 
 mainClassName = "com.simonbtomlinson.magicfetchbot.MainKt"
+
+
+task stage(dependsOn: ['shadowJar'])
