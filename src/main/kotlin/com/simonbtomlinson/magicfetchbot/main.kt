@@ -71,9 +71,9 @@ fun main(args: Array<String>) {
 	val tgClient = botComponent.telegramClient()
 
 	fun handleUpdate(update: Update) {
-		logger.info("Got an update!")
 		if (update.type == Update.Type.INLINE_QUERY) {
 			val inlineQuery = update.inlineQuery!!
+			logger.info("Update from user ${inlineQuery.sender.id} with text ${inlineQuery.query}")
 			val queryParts = inlineQuery.query.split("|")
 			val cardName = queryParts.getOrNull(0)
 			val setCode = queryParts.getOrNull(1)
@@ -88,7 +88,13 @@ fun main(args: Array<String>) {
 
 	post("/webhook") { req, res ->
 		val update = commonComponent.objectMapper().readValue<Update>(req.body())
-		handleUpdate(update)
+		try {
+			handleUpdate(update)
+		} catch (e: Exception) {
+			logger.error("Error handling update", e)
+			res.status(500)
+			return@post "Error"
+		}
 	}
 
 	get("/") { req, res ->
