@@ -11,6 +11,7 @@ import com.simonbtomlinson.magicfetchbot.database.*
 import com.simonbtomlinson.telegram.api.types.Update
 import com.simonbtomlinson.telegram.api.types.inline.result.InlineQueryResultPhoto
 import com.simonbtomlinson.telegram.api.types.method.AnswerInlineQueryMethod
+import com.simonbtomlinson.telegram.api.types.method.SendMessageMethod
 import org.slf4j.LoggerFactory
 import spark.Spark.*
 
@@ -44,6 +45,8 @@ fun main(args: Array<String>) {
 				maxPoolSize = findConfigurationVariable("POOL_SIZE").toInt()
 			))
 			.build()
+
+	val ownerTelegramId = findConfigurationVariable("OWNER_TELEGRAM_ID").toInt()
 
 	get("/createSchema") { _, _ ->
 		databaseComponent.databaseManager().createSchema()
@@ -83,6 +86,18 @@ fun main(args: Array<String>) {
 					inlineQueryId = inlineQuery.id,
 					results = imageURIs.map { InlineQueryResultPhoto(id = it, photoUrl = it, thumbUrl = it) }.toTypedArray()
 			))
+		} else if (update.type == Update.Type.MESSAGE) {
+			val message = update.message!!
+			logger.info("Message from user ${message.from?.id}")
+			if (message.from?.id == ownerTelegramId) {
+				logger.info("User ${message.from?.id} is the owner, replying to their message")
+				tgClient.sendMessage(SendMessageMethod(
+						chatId = message.chat.id,
+						text = "Response!"
+				))
+			} else {
+				logger.info("User ${message.from?.id} is not the owner, ignoring their message")
+			}
 		}
 	}
 
