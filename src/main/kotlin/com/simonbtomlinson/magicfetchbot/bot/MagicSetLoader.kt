@@ -35,7 +35,9 @@ class MagicSetLoader @Inject constructor(
 		logger.info("Loading ${cards.size} cards")
 		magicCardDAO.insertMagicCards(cards)
 
-		val printings = rawPrintings.map { MagicPrinting(it.name, it.setCode, it.imageUri) }
+		val printings = rawPrintings
+				.filter { it.imageUris.bestUri() != null }
+				.map { MagicPrinting(it.name, it.setCode, it.imageUris.bestUri()!!) }
 		logger.info("Loading ${printings.size} printings")
 		magicPrintingDAO.insertMagicPrintings(printings)
 	}
