@@ -52,7 +52,7 @@ object ScryfallSpec : Spek({
 					on { search("set:test") }.thenReturn(firstCall)
 					on { paginatePrintings("nextPage") }.thenReturn(secondCall)
 				}
-				val retriever = ScryfallRetriever(api, rateLimitDelay = 0)
+				val retriever = ScryfallRetriever(api)
 				assert.that(retriever.retrieveCardsForSet("test"), equalTo(listOf(printing1, printing2)))
 			}
 		}

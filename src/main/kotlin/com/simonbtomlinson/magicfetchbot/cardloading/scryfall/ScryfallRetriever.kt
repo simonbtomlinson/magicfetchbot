@@ -1,9 +1,10 @@
 package com.simonbtomlinson.magicfetchbot.cardloading.scryfall
 
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
-class ScryfallRetriever(private val api: ScryfallApi, private val rateLimitDelay: Long = 100) {
-
+class ScryfallRetriever @Inject constructor(private val api: ScryfallApi) {
+	private val rateLimitDelay: Long = 100
 	private var lastRateLimitTime: Long = 0
 
 	private val logger = LoggerFactory.getLogger(ScryfallRetriever::class.java)
