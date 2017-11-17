@@ -16,6 +16,6 @@ data class ImageUris(
 }
 data class ScryfallPrinting(
 		@JsonProperty("name") val name: String,
-        @JsonProperty("image_uris") val imageUris: ImageUris,
+        @JsonProperty("image_uris") val imageUris: ImageUris?,
         @JsonProperty("set") val setCode: String
 )

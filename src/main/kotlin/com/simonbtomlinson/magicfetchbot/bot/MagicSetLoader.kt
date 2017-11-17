@@ -5,6 +5,7 @@ import com.simonbtomlinson.magicfetchbot.dagger.BotScope
 import com.simonbtomlinson.magicfetchbot.database.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 @BotScope
 class MagicSetLoader @Inject constructor(
@@ -36,8 +37,8 @@ class MagicSetLoader @Inject constructor(
 		magicCardDAO.insertMagicCards(cards)
 
 		val printings = rawPrintings
-				.filter { it.imageUris.bestUri() != null }
-				.map { MagicPrinting(it.name, it.setCode, it.imageUris.bestUri()!!) }
+				.filter { it.imageUris?.bestUri() != null }
+				.map { MagicPrinting(it.name, it.setCode, it.imageUris!!.bestUri()!!) }
 		logger.info("Loading ${printings.size} printings")
 		magicPrintingDAO.insertMagicPrintings(printings)
 	}
@@ -47,6 +48,7 @@ class MagicSetLoader @Inject constructor(
 	}
 
 	fun loadAllSets() {
-		return getAllSets().forEach(this::loadSet)
+		// run in a new thread so the connection can return first.
+		thread { getAllSets().forEach(this::loadSet) }
 	}
 }
