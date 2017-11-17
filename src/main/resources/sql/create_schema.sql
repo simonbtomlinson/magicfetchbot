@@ -1,6 +1,6 @@
 CREATE TABLE magic_set(
 	id SERIAL PRIMARY KEY NOT NULL,
-	name VARCHAR UNIQUE NOT NULL,
+	name VARCHAR NOT NULL,
 	code VARCHAR UNIQUE NOT NULL,
 	release_date DATE NULL -- Not all sets have a release date
 );
@@ -8,7 +8,7 @@ CREATE UNIQUE INDEX ON magic_set(lower(code));
 
 CREATE TABLE magic_card(
 	id SERIAL PRIMARY KEY NOT NULL,
-	name VARCHAR UNIQUE NOT NULL -- The longest card (unset longest name elemental) has 141 characters
+	name VARCHAR NOT NULL -- The longest card (unset longest name elemental) has 141 characters
 );
 CREATE UNIQUE INDEX ON magic_card(lower(name));
 
@@ -16,7 +16,7 @@ CREATE TABLE magic_printing(
 	id SERIAL PRIMARY KEY NOT NULL,
 	card_id INT NOT NULL REFERENCES magic_card(id),
 	set_id INT NOT NULL REFERENCES magic_set(id),
-	image_uri TEXT UNIQUE NOT NULL
+	image_uri TEXT NOT NULL
 );
 
 /*

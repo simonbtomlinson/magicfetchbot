@@ -11,7 +11,8 @@ import javax.inject.Named
 @BotScope
 class MessageHandler @Inject constructor(
 		private val telegramClient: TelegramClient,
-		private @Named("OWNER_TELEGRAM_ID") val ownerTelegramId: Int
+		private @Named("OWNER_TELEGRAM_ID") val ownerTelegramId: Int,
+		private val setLoader: MagicSetLoader
 ) {
 
 	private val logger = LoggerFactory.getLogger(MessageHandler::class.java)
@@ -26,7 +27,19 @@ class MessageHandler @Inject constructor(
 			logger.info("Unauthenticated message sender: ${message.from?.id}")
 			return
 		}
+		if (message.text!! == "all") {
+			telegramClient.sendMessage(SendMessageMethod(message.chat.id, "Loading all sets"))
+			setLoader.loadAllSets()
+			telegramClient.sendMessage(SendMessageMethod(message.chat.id, "Loaded all sets"))
+		} else {
+			telegramClient.sendMessage(SendMessageMethod(message.chat.id, "Loading set ${message.text!!}"))
+			try {
+				setLoader.loadSetFromCode(message.text!!)
+				telegramClient.sendMessage(SendMessageMethod(message.chat.id, "Loaded set ${message.text!!}"))
+			} catch (e: Exception) {
+				telegramClient.sendMessage(SendMessageMethod(message.chat.id, "Failed to load"))
+			}
 
-		telegramClient.sendMessage(SendMessageMethod(message.chat.id, text = "Got an authenticated message"))
+		}
 	}
 }
