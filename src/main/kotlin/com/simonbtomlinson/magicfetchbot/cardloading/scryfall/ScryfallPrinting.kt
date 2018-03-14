@@ -14,8 +14,24 @@ data class ImageUris(
 		return png ?: large ?: normal ?: small
 	}
 }
+
+data class ScryfallCardFace(
+	@JsonProperty("name") val name: String,
+	@JsonProperty("image_uris") val imageUris: ImageUris?
+)
+
 data class ScryfallPrinting(
 		@JsonProperty("name") val name: String,
         @JsonProperty("image_uris") val imageUris: ImageUris?,
-        @JsonProperty("set") val setCode: String
-)
+        @JsonProperty("set") val setCode: String,
+		@JsonProperty("card_faces") val cardFaces: List<ScryfallCardFace>?
+) {
+	// The scryfall api specifies that a card is double sided if and only if it has a card_faces list that has faces
+	// with associated image_uris.
+	fun isDoubleFace(): Boolean = cardFaces?.firstOrNull()?.imageUris != null
+
+	fun bestImageUri(): String? = when {
+			isDoubleFace() -> cardFaces!![0].imageUris!!.bestUri()
+			else -> imageUris!!.bestUri()
+	}
+}
