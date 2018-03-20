@@ -13,7 +13,7 @@ CREATE TABLE magic_card(
 CREATE UNIQUE INDEX ON magic_card(lower(name));
 
 CREATE TABLE magic_printing(
-	id SERIAL PRIMARY KEY NOT NULL,
+	scryfall_id UUID PRIMARY KEY NOT NULL,
 	card_id INT NOT NULL REFERENCES magic_card(id),
 	set_id INT NOT NULL REFERENCES magic_set(id),
 	image_uri TEXT NOT NULL
@@ -27,7 +27,8 @@ CREATE FUNCTION bulk_load_sets(names TEXT[], codes TEXT[], release_dates DATE[])
 		INSERT INTO magic_set(name, code, release_date)
 		SELECT name, code, release_date
 		FROM unnest(names, codes, release_dates) new_sets(name, code, release_date)
-		ON CONFLICT DO NOTHING;
+		ON CONFLICT (code) DO UPDATE SET name = excluded.name, release_date = excluded.release_date
+		;
 	END $$ LANGUAGE 'plpgsql';
 
 
@@ -43,12 +44,13 @@ CREATE FUNCTION bulk_load_cards(names TEXT[]) RETURNS VOID
 	END $$ LANGUAGE 'plpgsql';
 
 
-CREATE FUNCTION bulk_load_printings(card_names TEXT[], set_codes TEXT[], image_uris TEXT[]) RETURNS VOID
+CREATE FUNCTION bulk_load_printings(scryfall_ids UUID[], card_names TEXT[], set_codes TEXT[], image_uris TEXT[]) RETURNS VOID
 	AS $$ BEGIN
-		INSERT INTO magic_printing(card_id, set_id, image_uri)
-		SELECT mc.id, ms.id, new_printings.image_uri
-		FROM unnest(card_names, set_codes, image_uris) new_printings(card_name, set_code, image_uri)
+		INSERT INTO magic_printing(scryfall_id, card_id, set_id, image_uri)
+		SELECT new_printings.scryfall_id, mc.id, ms.id, new_printings.image_uri
+		FROM unnest(scryfall_ids, card_names, set_codes, image_uris) new_printings(scryfall_id, card_name, set_code, image_uri)
 		INNER JOIN magic_card mc ON mc.name = new_printings.card_name
 		INNER JOIN magic_set ms ON ms.code = new_printings.set_code
-		ON CONFLICT DO NOTHING;
+		ON CONFLICT (scryfall_id) DO UPDATE SET card_id = excluded.card_id, set_id = excluded.set_id, image_uri = excluded.image_uri
+		;
 	END $$ LANGUAGE 'plpgsql';

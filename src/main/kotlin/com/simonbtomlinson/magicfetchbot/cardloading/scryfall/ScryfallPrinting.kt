@@ -1,6 +1,7 @@
 package com.simonbtomlinson.magicfetchbot.cardloading.scryfall
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.*
 
 data class ImageUris(
 		@JsonProperty("png") val png: String?,
@@ -21,6 +22,7 @@ data class ScryfallCardFace(
 )
 
 data class ScryfallPrinting(
+		@JsonProperty("id") val scryfallID: UUID,
 		@JsonProperty("name") val name: String,
         @JsonProperty("image_uris") val imageUris: ImageUris?,
         @JsonProperty("set") val setCode: String,
