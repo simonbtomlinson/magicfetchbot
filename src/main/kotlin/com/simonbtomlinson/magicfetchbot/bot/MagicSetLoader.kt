@@ -37,7 +37,7 @@ class MagicSetLoader @Inject constructor(
 		magicCardDAO.insertMagicCards(cards)
 
 		val printings = rawPrintings
-				.filter { it.imageUris?.bestUri() != null }
+				.filter { it.bestImageUri() != null }
 				.map { MagicPrinting(it.scryfallID, it.name, it.setCode, it.bestImageUri()!!) }
 		logger.info("Loading ${printings.size} printings")
 		magicPrintingDAO.insertMagicPrintings(printings)

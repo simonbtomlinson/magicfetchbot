@@ -12,7 +12,7 @@ data class ImageUris(
 		@JsonProperty("small") val small: String?
 ) {
 	fun bestUri(): String? {
-		return png ?: large ?: normal ?: small
+		return large ?: normal ?: small // Telegram wants a jpeg. large, normal, and small are jpegs.
 	}
 }
 
