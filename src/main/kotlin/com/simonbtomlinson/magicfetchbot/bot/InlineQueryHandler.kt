@@ -30,7 +30,7 @@ class InlineQueryHandler @Inject constructor(
 
 		val answerInlineQueryObject = AnswerInlineQueryMethod(
 				inlineQueryId = inlineQuery.id,
-				results = imageURIs.map { InlineQueryResultPhoto(id = it, photoUrl = it, thumbUrl = it) }.toTypedArray()
+				results = imageURIs.map { InlineQueryResultPhoto(id = it.scryfallID.toString(), photoUrl = it.imageUri, thumbUrl = it.imageUri) }.toTypedArray()
 		)
 		logger.info("Prepared response: " + objectMapper.writeValueAsString(answerInlineQueryObject))
 		tgClient.answerInlineQuery(answerInlineQueryObject)

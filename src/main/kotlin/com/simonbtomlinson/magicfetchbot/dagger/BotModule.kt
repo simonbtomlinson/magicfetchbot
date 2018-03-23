@@ -24,7 +24,7 @@ class BotModule(private val apiKey: String, private val ownerTelegramId: Int) {
 	@Provides @BotScope @Named("OWNER_TELEGRAM_ID")
 	fun provideOwnerTelegramID(): Int = ownerTelegramId
 
-	@Provides @BotScope @Named("scryfallUrl")
+	@Provides @BotScope @Named("imageUri")
 	fun provideScryfallUrl() = "https://api.scryfall.com/"
 
 
@@ -37,7 +37,7 @@ class BotModule(private val apiKey: String, private val ownerTelegramId: Int) {
 	}
 
 	@Provides @BotScope
-	fun provideScryfallApi(@Named("scryfallUrl") scryfallUrl: String, mapper: ObjectMapper): ScryfallApi {
+	fun provideScryfallApi(@Named("imageUri") scryfallUrl: String, mapper: ObjectMapper): ScryfallApi {
 		val retrofit = Retrofit.Builder()
 				.baseUrl(scryfallUrl)
 				.addConverterFactory(JacksonConverterFactory.create(mapper))

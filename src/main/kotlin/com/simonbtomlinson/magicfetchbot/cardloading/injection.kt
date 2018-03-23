@@ -24,11 +24,11 @@ interface CardLoadingComponent {
 @Module
 class CardLoadingModule(private val scryfallUrl: String) {
 
-	@Provides @CardLoadingScope @Named("scryfallUrl")
+	@Provides @CardLoadingScope @Named("imageUri")
 	fun provideScryfallUrl() = scryfallUrl
 
 	@Provides @CardLoadingScope
-	fun provideScryfallApi(@Named("scryfallUrl") scryfallUrl: String, mapper: ObjectMapper): ScryfallApi {
+	fun provideScryfallApi(@Named("imageUri") scryfallUrl: String, mapper: ObjectMapper): ScryfallApi {
 		val retrofit = Retrofit.Builder()
 				.baseUrl("https://api.scryfall.com")
 				.addConverterFactory(JacksonConverterFactory.create(mapper))
