@@ -24,6 +24,7 @@ class InlineQueryHandler @Inject constructor(
 		val setCode = queryParts.getOrNull(1)
 		val searchCriteria = SearchCriteria(nameStartsWith = cardName, setCode = setCode)
 		val imageURIs = searchProvider.searchForCards(searchCriteria)
+		logger.info("Responding with ${imageURIs.size} uris: \n " + imageURIs.joinToString("\n"))
 		tgClient.answerInlineQuery(AnswerInlineQueryMethod(
 				inlineQueryId = inlineQuery.id,
 				results = imageURIs.map { InlineQueryResultPhoto(id = it, photoUrl = it, thumbUrl = it) }.toTypedArray()
