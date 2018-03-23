@@ -1,5 +1,6 @@
 package com.simonbtomlinson.magicfetchbot.bot
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.simonbtomlinson.magicfetchbot.dagger.BotScope
 import com.simonbtomlinson.magicfetchbot.database.SearchCriteria
 import com.simonbtomlinson.magicfetchbot.database.SearchProvider
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @BotScope
 class InlineQueryHandler @Inject constructor(
 		private val tgClient: TelegramClient,
-		private val searchProvider: SearchProvider
+		private val searchProvider: SearchProvider,
+		private val objectMapper: ObjectMapper
 ) {
 	private val logger = LoggerFactory.getLogger(InlineQueryHandler::class.java)
 
@@ -25,9 +27,12 @@ class InlineQueryHandler @Inject constructor(
 		val searchCriteria = SearchCriteria(nameStartsWith = cardName, setCode = setCode)
 		val imageURIs = searchProvider.searchForCards(searchCriteria)
 		logger.info("Responding with ${imageURIs.size} uris: \n " + imageURIs.joinToString("\n"))
-		tgClient.answerInlineQuery(AnswerInlineQueryMethod(
+
+		val answerInlineQueryObject = AnswerInlineQueryMethod(
 				inlineQueryId = inlineQuery.id,
 				results = imageURIs.map { InlineQueryResultPhoto(id = it, photoUrl = it, thumbUrl = it) }.toTypedArray()
-		))
+		)
+		logger.info("Prepared response: " + objectMapper.writeValueAsString(answerInlineQueryObject))
+		tgClient.answerInlineQuery(answerInlineQueryObject)
 	}
 }
