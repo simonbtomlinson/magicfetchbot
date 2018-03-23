@@ -10,6 +10,8 @@ import com.simonbtomlinson.magicfetchbot.cardloading.scryfall.ScryfallApi
 import com.simonbtomlinson.magicfetchbot.cardloading.scryfall.ScryfallRetriever
 import com.simonbtomlinson.magicfetchbot.database.DaggerDatabaseComponent
 import com.simonbtomlinson.magicfetchbot.database.DatabaseModule
+import com.simonbtomlinson.magicfetchbot.database.SearchCriteria
+import com.simonbtomlinson.magicfetchbot.database.SearchProvider
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
@@ -107,6 +109,15 @@ object EndToEndSpec : Spek({
 					resultSet.close()
 					statement.close()
 				}
+			}
+		}
+
+		on("loading isd (a set with flip cards") {
+			setLoader.loadSetFromCode("isd")
+			val searchProvider = SearchProvider(databaseComponent.connectionManager())
+			it("Loads printings for flip cards") {
+				val imageUris = searchProvider.searchForCards(SearchCriteria(nameStartsWith = "Delver of", setCode = "isd"))
+				assert.that(imageUris.size, equalTo(1))
 			}
 		}
 	}
