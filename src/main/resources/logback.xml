@@ -10,7 +10,7 @@
 
     <logger name="com.simonbtomlinson.magicfetchbot" level="info" />
 
-    <root level="warn">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
