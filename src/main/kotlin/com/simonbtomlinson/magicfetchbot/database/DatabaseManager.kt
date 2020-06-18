@@ -14,9 +14,14 @@ class DatabaseManager(private val connectionManager: ConnectionManager) {
 	fun dropSchema() {
 		connectionManager.withConnection { conn ->
 			val statement = conn.createStatement()
-			// This should drop EVERYTHING. It doesn't work if current_user is the default postgres user,
-			// but that shouldn't happen.
-			statement.execute("DROP OWNED BY current_user;"	)
+			// I should really just be running tests in nested transactions, but at this scale
+			// this is slightly easier
+			statement.execute("DROP FUNCTION bulk_load_printings(UUID[], TEXT[], TEXT[], TEXT[]);")
+			statement.execute("DROP FUNCTION bulk_load_cards(TEXT[])")
+			statement.execute("DROP FUNCTION bulk_load_sets(TEXT[], TEXT[], DATE[])")
+			statement.execute("DROP TABLE magic_printing")
+			statement.execute("DROP TABLE magic_card")
+			statement.execute("DROP TABLE magic_set")
 			statement.close()
 		}
 	}

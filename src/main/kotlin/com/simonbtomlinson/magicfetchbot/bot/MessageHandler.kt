@@ -11,15 +11,15 @@ import javax.inject.Named
 @BotScope
 class MessageHandler @Inject constructor(
 		private val telegramClient: TelegramClient,
-		private @Named("OWNER_TELEGRAM_ID") val ownerTelegramId: Int,
+		@Named("ADMIN_TELEGRAM_IDS") private val adminTelegramIDs: List<Int>,
 		private val setLoader: MagicSetLoader
 ) {
 
 	private val logger = LoggerFactory.getLogger(MessageHandler::class.java)
 
-	private fun senderIsAuthenticated(message: Message): Boolean {
+	internal fun senderIsAuthenticated(message: Message): Boolean {
 		val sender = message.from
-		return sender != null && sender.id == ownerTelegramId
+		return sender != null && adminTelegramIDs.contains(sender.id)
 	}
 
 	fun handleMessage(message: Message) {

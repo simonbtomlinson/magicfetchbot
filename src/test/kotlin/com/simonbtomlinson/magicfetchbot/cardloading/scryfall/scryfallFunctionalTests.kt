@@ -42,8 +42,8 @@ object ScryfallFunctionalTests : Spek({
 			}
 			it ("Chooses a good image uri for 'Delver of Secrets'") {
 				assert.that(delver.bestImageUri(), present())
-				// The correct url should include 51a (51 for delver's id number and a for the front side)
-				assert.that(delver.bestImageUri()!!, contains("51a".toRegex()))
+				// The correct url should include front, since it's a double-sided card
+				assert.that(delver.bestImageUri()!!, contains("front".toRegex()))
 			}
 			it ("retrieves a non-double-sided cards and correctly identifies it as not double-sided") {
 				val snapcaster = isd.find { it.name == "Snapcaster Mage" }

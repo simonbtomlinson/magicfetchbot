@@ -16,13 +16,13 @@ import javax.inject.Named
 
 
 @Module
-class BotModule(private val apiKey: String, private val ownerTelegramId: Int) {
+class BotModule(private val apiKey: String, private val adminTelegramIDs: List<Int>) {
 
 	@Provides @BotScope @Named("apiKey")
 	fun provideApiKey(): String = apiKey
 
-	@Provides @BotScope @Named("OWNER_TELEGRAM_ID")
-	fun provideOwnerTelegramID(): Int = ownerTelegramId
+	@Provides @BotScope @Named("ADMIN_TELEGRAM_IDS")
+	fun provideAdminTelegramIds(): List<Int> = adminTelegramIDs
 
 	@Provides @BotScope @Named("imageUri")
 	fun provideScryfallUrl() = "https://api.scryfall.com/"

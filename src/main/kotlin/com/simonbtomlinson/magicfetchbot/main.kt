@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
 	port(findConfigurationVariable("PORT").toInt())
 	val commonComponent = DaggerCommonComponent.builder().commonModule(CommonModule()).build()
 	val apiKey = findConfigurationVariable("TELEGRAM_API_KEY")
-	val ownerTelegramId = findConfigurationVariable("OWNER_TELEGRAM_ID").toInt()
+	val adminTelegramIDs = findConfigurationVariable("ADMIN_TELEGRAM_IDS").split(",").map { it.toInt() }
 
 	val databaseComponent = DaggerDatabaseComponent.builder()
 			.databaseModule(DatabaseModule(
@@ -38,7 +38,7 @@ fun main(args: Array<String>) {
 			.build()
 	val botComponent = DaggerBotComponent.builder()
 			.databaseComponent(databaseComponent)
-			.botModule(BotModule(apiKey, ownerTelegramId))
+			.botModule(BotModule(apiKey, adminTelegramIDs))
 			.build()
 
 
